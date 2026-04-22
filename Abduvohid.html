@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Detector | 🛡️ Kiberxavfsizlik</title>
+    <style>
+        /* CSS - Tashqi ko'rinish */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 400px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        h2 { margin-bottom: 20px; font-size: 24px; }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 8px;
+            box-sizing: border-box;
+            outline: none;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #00d2ff;
+            background: -webkit-linear-gradient(to right, #3a7bd5, #00d2ff);
+            background: linear-gradient(to right, #3a7bd5, #00d2ff);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover { transform: scale(1.02); opacity: 0.9; }
+        #result {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none; /* Dastlab ko'rinmaydi */
+            font-weight: bold;
+        }
+        .warning { background: #ff4b2b; color: white; }
+        .success { background: #28a745; color: white; }
+        .info { font-size: 12px; margin-top: 10px; text-align: left; opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🛡️ Phishing Detector</h2>
+    <p>Shubhali havolani (URL) kiriting:</p>
+    
+    <input type="text" id="urlInput" placeholder="https://example.com">
+    <button onclick="checkURL()">Tekshirish</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    // JavaScript - Mantiqiy qism
+    function checkURL() {
+        const url = document.getElementById('urlInput').value.trim();
+        const resultDiv = document.getElementById('result');
+        
+        if (!url) {
+            alert("Iltimos, havolani kiriting!");
+            return;
+        }
+
+        let score = 0;
+        let reasons = [];
+
+        // 1. HTTPS tekshiruvi
+        if (!url.startsWith("https://")) {
+            score++;
+            reasons.push("❌ HTTPS xavfsizlik protokoli yo'q.");
+        }
+
+        // 2. Shubhali domenlar (Phishingda ko'p ishlatiladigan)
+        const badDomains = ['.tk', '.ml', '.ga', '.cf', '.gq', '.xyz', '.site', '.online'];
+        if (badDomains.some(ext => url.toLowerCase().includes(ext))) {
+            score++;
+            reasons.push("⚠️ Shubhali domen kengaytmasi aniqlandi.");
+        }
+
+        // 3. Uzunlik tekshiruvi
+        if (url.length > 50) {
+            score++;
+            reasons.push("📏 Havola juda uzun (shubhali).");
+        }
+
+        // 4. Kalit so'zlar (Aldovchi so'zlar)
+        const keys = ['login', 'verify', 'bank', 'free', 'gift', 'bonus', 'payme', 'click'];
+        if (keys.some(k => url.toLowerCase().includes(k)) && !url.includes("google.com")) {
+            score++;
+            reasons.push("🛑 Shubhali kalit so'zlar bor.");
+        }
+
+        // Natijani ko'rsatish
+        resultDiv.style.display = "block";
+        if (score >= 2) {
+            resultDiv.className = "warning";
+            resultDiv.innerHTML = "XAVFLI! <br> <div class='info'>" + reasons.join("<br>") + "</div>";
+        } else {
+            resultDiv.className = "success";
+            resultDiv.innerHTML = "XAVFSIZ KO'RINADI ✅";
+        }
+    }
+</script>
+
+</body>
+</html>
